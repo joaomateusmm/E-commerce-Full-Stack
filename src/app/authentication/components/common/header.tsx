@@ -1,9 +1,13 @@
+// Header.tsx
+
 "use client";
 
+// 1. Importar os hooks useState e useEffect
 import { LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // 1. Importar o useRouter
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -18,19 +22,47 @@ import { authClient } from "@/lib/auth-client";
 
 export const Header = () => {
   const { data: session } = authClient.useSession();
-  const router = useRouter(); // 2. Inicializar o router
+  const router = useRouter();
 
-  // 3. Atualizar a função para deslogar e depois redirecionar
+  // 2. Criar os estados para visibilidade e posição do scroll
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  // 3. Efeito para controlar o scroll
+  useEffect(() => {
+    const controlNavbar = () => {
+      // Se o scroll atual for maior que o anterior, estamos a descer
+      if (window.scrollY > lastScrollY) {
+        setIsVisible(false);
+      } else {
+        // Se for menor, estamos a subir
+        setIsVisible(true);
+      }
+      // Atualiza a última posição do scroll
+      setLastScrollY(window.scrollY);
+    };
+
+    // Adiciona o "ouvinte" de scroll quando o componente é montado
+    window.addEventListener("scroll", controlNavbar);
+
+    // Remove o "ouvinte" quando o componente é desmontado para evitar leaks de memória
+    return () => {
+      window.removeEventListener("scroll", controlNavbar);
+    };
+  }, [lastScrollY]);
+
   const handleSignOut = async () => {
-    // Primeiro, faz o logout
     await authClient.signOut();
-
-    // Depois, redireciona para a página inicial
     router.push("/");
   };
 
   return (
-    <header className="flex items-center justify-between p-5 border-b border-gray-100">
+    // 4. Aplicar as classes de posição e animação
+    <header
+      className={`fixed top-0 left-0 z-50 flex w-full items-center justify-between rounded-b-2xl border-b border-gray-100 bg-gray-50/50 p-5 backdrop-blur-sm transition-transform duration-300 ease-out ${
+        isVisible ? "translate-y-0" : "-translate-y-full"
+      }`}
+    >
       <Link href="/">
         <Image src="/logo.svg" alt="BEWEAR" width={100} height={26.14} />
       </Link>
