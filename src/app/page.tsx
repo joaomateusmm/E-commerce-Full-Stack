@@ -7,7 +7,7 @@ import Footer from "@/components/common/footer";
 import { db } from "@/db";
 import { productTable } from "@/db/schema";
 
-import { Header } from "./authentication/components/common/header";
+import { Header } from "../components/common/header";
 import ProductList from "./authentication/components/common/products-list";
 
 const Home = async () => {

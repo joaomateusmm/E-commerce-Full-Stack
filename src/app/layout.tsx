@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className={poppins.variable}>
+    <html title="BEWEAR" lang="pt-BR" className={poppins.variable}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

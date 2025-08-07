@@ -169,7 +169,7 @@ const SignUpForm = ({ onSwitchToSignIn }: SignUpFormProps) => {
           </CardContent>
           <CardFooter>
             <Button
-              className="w-full cursor-pointer hover:scale-105 hover:bg-green-600 hover:active:scale-95"
+              className="w-full cursor-pointer hover:scale-[1.02] hover:bg-green-600 hover:active:scale-95"
               type="submit"
               disabled={isSubmitting}
             >

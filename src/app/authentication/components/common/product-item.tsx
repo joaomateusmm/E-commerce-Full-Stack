@@ -20,7 +20,10 @@ const ProductItem = ({ product }: ProductItemProps) => {
   }
 
   return (
-    <Link href="/" className="group flex w-[155px] flex-col gap-4">
+    <Link
+      href={`/product-variant/${firstVariant.slug}`}
+      className="group flex w-[155px] flex-col gap-4"
+    >
       <div className="relative flex h-auto w-full items-center justify-center rounded-lg">
         <Image
           src={firstVariant.imageUrl}

@@ -139,7 +139,7 @@ const SignInForm = ({ onSwitchToSignUp }: SignInFormProps) => {
           </CardContent>
           <CardFooter className="flex flex-col gap-5">
             <Button
-              className="w-full cursor-pointer shadow-md hover:scale-105 hover:bg-green-600 hover:active:scale-95"
+              className="w-full cursor-pointer shadow-md hover:scale-[1.02] hover:bg-green-600 hover:active:scale-95"
               type="submit"
               disabled={isSubmitting}
             >
@@ -154,7 +154,7 @@ const SignInForm = ({ onSwitchToSignUp }: SignInFormProps) => {
             </Button>
             <Button
               onClick={handleSignInWithGoogle}
-              className="w-full cursor-pointer shadow-md hover:scale-105 hover:bg-[#f5f5f5] hover:active:scale-95"
+              className="w-full cursor-pointer shadow-md hover:scale-[1.02] hover:bg-[#f5f5f5] hover:active:scale-95"
               variant="outline"
               type="button"
             >
