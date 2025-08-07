@@ -1,4 +1,4 @@
-// src/app/categories/[slug]/page.tsx
+// src/app/category/[slug]/page.tsx
 
 import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
@@ -9,11 +9,9 @@ import Footer from "@/components/common/footer";
 import { db } from "@/db";
 import { categoryTable, productTable } from "@/db/schema";
 
-interface CategoryPageProps {
-  params: { slug: string };
-}
-
-const CategoryPage = async ({ params }: CategoryPageProps) => {
+// A interface separada foi removida.
+// A tipagem agora é feita diretamente na função.
+const CategoryPage = async ({ params }: { params: { slug: string } }) => {
   const { slug } = params;
 
   const category = await db.query.categoryTable.findFirst({
