@@ -1,3 +1,5 @@
+// src/app/authentication/components/common/products-list.tsx
+
 "use client";
 
 import { productTable, productVariantTable } from "@/db/schema";
@@ -11,12 +13,12 @@ interface ProductListProps {
   })[];
 }
 
-// REMOVIDO: a palavra-chave "async"
 const ProductList = ({ title, products }: ProductListProps) => {
   return (
     <div className="space-y-6">
-      <h3 className="px-5 font-semibold">{title}</h3>
-      <div className="px-5 flex gap-4 overflow-x-auto [&::-webkit-scrollbar]:hidden">
+      <h3 className="font-semibold px-5">{title}</h3>
+      {/* CORREÇÃO APLICADA AQUI: Adicionado "py-4" */}
+      <div className="flex gap-4 overflow-x-auto py-4 [&::-webkit-scrollbar]:hidden px-5">
         {products.map((product) => (
           <ProductItem key={product.id} product={product} />
         ))}

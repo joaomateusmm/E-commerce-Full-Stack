@@ -1,4 +1,4 @@
-// product-item.tsx
+// src/app/authentication/components/common/product-item.tsx
 
 import Image from "next/image";
 import Link from "next/link";
@@ -15,27 +15,20 @@ interface ProductItemProps {
 const ProductItem = ({ product }: ProductItemProps) => {
   const firstVariant = product.variants?.[0];
 
-  // ADICIONADO: Debug para vermos a URL exata no console do navegador
-  console.log(
-    `Renderizando produto: ${product.name}, URL:`,
-    firstVariant?.imageUrl,
-  );
-
   if (!firstVariant || !firstVariant.imageUrl) {
     return null;
   }
 
   return (
-    <Link href="/" className="flex w-[155px] flex-col gap-4">
-      <div className="relative flex w-full items-center justify-center rounded-lg">
+    <Link href="/" className="group flex w-[155px] flex-col gap-4">
+      <div className="relative flex h-auto w-full items-center justify-center rounded-lg">
         <Image
-          src={firstVariant.imageUrl} // Agora deve receber uma URL limpa
+          src={firstVariant.imageUrl}
           alt={firstVariant.name || product.name}
           width={200}
           height={200}
           sizes="100vw"
-          className="rounded-3xl shadow-md"
-          style={{ objectFit: "contain" }}
+          className="h-auto w-full rounded-3xl object-contain shadow-md transition-transform duration-300 ease-in-out group-hover:translate-y-[-5px] group-hover:active:translate-y-[-5px]"
         />
       </div>
 

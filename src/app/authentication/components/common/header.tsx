@@ -59,7 +59,7 @@ export const Header = () => {
   return (
     // 4. Aplicar as classes de posição e animação
     <header
-      className={`fixed top-0 left-0 z-50 flex w-full items-center justify-between rounded-b-2xl border-b border-gray-100 bg-gray-50/50 p-5 backdrop-blur-sm transition-transform duration-300 ease-out ${
+      className={`fixed top-0 left-0 z-50 flex w-full items-center justify-between rounded-b-2xl border-[1.5px] border-b border-gray-200 bg-gray-50/50 p-5 backdrop-blur-sm transition-transform duration-300 ease-out ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -69,7 +69,7 @@ export const Header = () => {
 
       <Sheet>
         <SheetTrigger asChild>
-          <Button variant="outline" size="icon">
+          <Button className="cursor-pointer" variant="outline" size="icon">
             <MenuIcon />
           </Button>
         </SheetTrigger>
@@ -98,7 +98,12 @@ export const Header = () => {
                       </span>
                     </div>
                   </div>
-                  <Button variant="outline" size="icon" onClick={handleSignOut}>
+                  <Button
+                    className="cursor-pointer"
+                    variant="outline"
+                    size="icon"
+                    onClick={handleSignOut}
+                  >
                     <LogOutIcon />
                   </Button>
                 </div>
