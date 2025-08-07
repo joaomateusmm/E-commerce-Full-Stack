@@ -1,27 +1,41 @@
+"use client";
+
+import { useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
+import { Header } from "./components/common/header";
 import SignInForm from "./components/sign-in-form";
 import SignUpForm from "./components/sign-up-form";
 
-const Authentication = async () => {
+const Authentication = () => {
+  const [activeTab, setActiveTab] = useState("sign-up");
+
+  const switchToSignIn = () => setActiveTab("sign-in");
+  const switchToSignUp = () => setActiveTab("sign-up");
+
   return (
-    <div className="flex w-full max-w-sm flex-col gap-6 mx-auto p-5">
-      <Tabs defaultValue="sign-up">
-        <TabsList>
-          <TabsTrigger value="sign-in">Entrar</TabsTrigger>
-          <TabsTrigger value="sign-up">Criar Conta</TabsTrigger>
-        </TabsList>
-        <TabsContent value="sign-in">
-          <SignInForm/> 
-          {/* Formulário entrar com a conta */}
-        </TabsContent>
-        <TabsContent value="sign-up">
-          <SignUpForm/>
-        {/* Formulário Criar a conta */}
-        </TabsContent>
-      </Tabs>
-    </div>
+    <>
+      <Header />
+      <div className="mx-auto flex w-full max-w-sm flex-col gap-6 p-5">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="mb-2 shadow-md">
+            <TabsTrigger className="cursor-pointer" value="sign-in">
+              Entrar
+            </TabsTrigger>
+            <TabsTrigger className="cursor-pointer" value="sign-up">
+              Criar Conta
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent className="rounded-2xl shadow-lg" value="sign-in">
+            <SignInForm onSwitchToSignUp={switchToSignUp} />
+          </TabsContent>
+          <TabsContent className="rounded-2xl shadow-lg" value="sign-up">
+            <SignUpForm onSwitchToSignIn={switchToSignIn} />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </>
   );
 };
 
