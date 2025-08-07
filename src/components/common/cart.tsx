@@ -1,3 +1,5 @@
+"use client";
+
 import { ShoppingBasketIcon } from "lucide-react"; // 1.6k (gzipped: 919)
 
 import { Button } from "@/components/ui/button";
