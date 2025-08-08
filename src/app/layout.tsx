@@ -5,6 +5,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Poppins } from "next/font/google"; // 1. Importar a fonte
 import { Toaster } from "sonner";
 
+import ReactQueryProvider from "@/providers/react-query";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -36,7 +38,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ReactQueryProvider>{children}</ReactQueryProvider>
         <Toaster />
       </body>
     </html>
