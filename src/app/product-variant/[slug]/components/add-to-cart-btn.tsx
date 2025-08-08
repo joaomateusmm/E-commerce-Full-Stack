@@ -29,14 +29,14 @@ const AddToCartButton = ({
   });
   return (
     <Button
-      className="rounded-full"
+      className="rounded-full py-6 cursor-pointer bg-transparent border-[1.5px] text-gray-800 drop-shadow-sm duration-200 hover:scale-[1.02] hover:bg-gray-50/10 hover:text-black"
       size="lg"
       variant="outline"
       disabled={isPending}
       onClick={() => mutate()}
     >
       {isPending && <Loader2 className="animate-spin" />}
-      Adicionar à sacola
+      Adicionar ao Carrinho
     </Button>
   );
 };

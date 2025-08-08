@@ -1,9 +1,10 @@
 import { icons, MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
+import { format } from "path";
+
+import { formatCentsToBRL } from "@/helpers/money";
 
 import { Button } from "../ui/button";
-import { format } from "path";
-import { formatCentsToBRL } from "@/helpers/money";
 
 interface CartItemProps {
   id: string;
