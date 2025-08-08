@@ -2,12 +2,18 @@
 
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { z } from "zod"; // Importar o Zod
 
 import { db } from "@/db";
 import { cartItemTable, cartTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
-import { AddProductToCartSchema, addProductToCartSchema } from "./schema";
+// 👇 ERRO DE IMPORTAÇÃO CORRIGIDO AQUI:
+// Removido 'AddProductToCartSchema' da importação
+import { addProductToCartSchema } from "./schema";
+
+// E o tipo é inferido a partir do schema com a ajuda do Zod
+type AddProductToCartSchema = z.infer<typeof addProductToCartSchema>;
 
 export const addProductToCart = async (data: AddProductToCartSchema) => {
   addProductToCartSchema.parse(data);

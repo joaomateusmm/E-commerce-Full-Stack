@@ -3,6 +3,7 @@ import { MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
 
+import { addProductToCart } from "@/actions/add-cart-products";
 import { decreaseCartProductQuantity } from "@/actions/decrease-cart-product-quantity";
 import { removeProductFromCart } from "@/actions/remove-cart-product";
 import { formatCentsToBRL } from "@/helpers/money";
@@ -13,6 +14,7 @@ interface CartItemProps {
   id: string;
   productName: string;
   productVariantName: string;
+  productVariantId: string;
   productVariantImageUrl: string;
   productVariantPriceInCents: number;
   quantity: number;
@@ -22,6 +24,7 @@ const CartItem = ({
   id,
   productName,
   productVariantName,
+  productVariantId, // <-- A prop correta já existe
   productVariantImageUrl,
   productVariantPriceInCents,
   quantity,
@@ -44,13 +47,15 @@ const CartItem = ({
     },
   });
 
-  // const increaseCartProductQuantityMutation = useMutation({
-  //   mutationKey: ["increase-cart-product-quantity"],
-  //   mutationFn: () => increaseCartProductQuantity({ cartItemId: id }),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["cart"] });
-  //   },
-  // });
+  const increaseCartProductQuantityMutation = useMutation({
+    mutationKey: ["increase-cart-product-quantity"],
+    // 👇 ERRO CORRIGIDO AQUI: Passando 'productVariantId' em vez de 'id'
+    mutationFn: () =>
+      addProductToCart({ productVariantId: productVariantId, quantity: 1 }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
 
   const handleDeleteClick = () => {
     removeProductFromCartMutation.mutate(undefined, {
@@ -71,9 +76,9 @@ const CartItem = ({
     decreaseCartProductQuantityMutation.mutate();
   };
 
-  // const handleIncreaseQuantityClick = () => {
-  //   increaseCartProductQuantityMutation.mutate();
-  // };
+  const handleIncreaseQuantityClick = () => {
+    increaseCartProductQuantityMutation.mutate();
+  };
 
   return (
     <div className="flex items-center justify-between">
@@ -99,7 +104,11 @@ const CartItem = ({
               <MinusIcon />
             </Button>
             <p>{quantity}</p>
-            <Button className="h-4 w-4" variant="ghost">
+            <Button
+              className="h-4 w-4"
+              variant="ghost"
+              onClick={handleIncreaseQuantityClick}
+            >
               <PlusIcon />
             </Button>
           </div>
