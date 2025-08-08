@@ -1,9 +1,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { icons, MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { MinusIcon, PlusIcon, TrashIcon } from "lucide-react";
 import Image from "next/image";
-import { format } from "path";
 import { toast } from "sonner";
 
+import { decreaseCartProductQuantity } from "@/actions/decrease-cart-product-quantity";
 import { removeProductFromCart } from "@/actions/remove-cart-product";
 import { formatCentsToBRL } from "@/helpers/money";
 
@@ -27,6 +27,7 @@ const CartItem = ({
   quantity,
 }: CartItemProps) => {
   const queryClient = useQueryClient();
+
   const removeProductFromCartMutation = useMutation({
     mutationKey: ["remove-cart-product"],
     mutationFn: () => removeProductFromCart({ cartItemId: id }),
@@ -34,6 +35,23 @@ const CartItem = ({
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
+
+  const decreaseCartProductQuantityMutation = useMutation({
+    mutationKey: ["decrease-cart-product-quantity"],
+    mutationFn: () => decreaseCartProductQuantity({ cartItemId: id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+
+  // const increaseCartProductQuantityMutation = useMutation({
+  //   mutationKey: ["increase-cart-product-quantity"],
+  //   mutationFn: () => increaseCartProductQuantity({ cartItemId: id }),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({ queryKey: ["cart"] });
+  //   },
+  // });
+
   const handleDeleteClick = () => {
     removeProductFromCartMutation.mutate(undefined, {
       onSuccess: () => {
@@ -44,6 +62,19 @@ const CartItem = ({
       },
     });
   };
+
+  const handleDecreaseQuantityClick = () => {
+    if (quantity === 1) {
+      handleDeleteClick();
+      return;
+    }
+    decreaseCartProductQuantityMutation.mutate();
+  };
+
+  // const handleIncreaseQuantityClick = () => {
+  //   increaseCartProductQuantityMutation.mutate();
+  // };
+
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-4">
@@ -60,11 +91,15 @@ const CartItem = ({
             {productVariantName}
           </p>
           <div className="flex w-[100px] items-center justify-between rounded-lg border bg-gray-50/50 p-1 drop-shadow-md">
-            <Button className="h-4 w-4" variant="ghost" onClick={() => {}}>
+            <Button
+              className="h-4 w-4"
+              variant="ghost"
+              onClick={handleDecreaseQuantityClick}
+            >
               <MinusIcon />
             </Button>
             <p>{quantity}</p>
-            <Button className="h-4 w-4" variant="ghost" onClick={() => {}}>
+            <Button className="h-4 w-4" variant="ghost">
               <PlusIcon />
             </Button>
           </div>
@@ -81,7 +116,7 @@ const CartItem = ({
             <TrashIcon />
           </Button>
           <p className="text-sm font-bold">
-            {formatCentsToBRL(productVariantPriceInCents)}
+            {formatCentsToBRL(productVariantPriceInCents * quantity)}
           </p>
         </div>
       </div>
