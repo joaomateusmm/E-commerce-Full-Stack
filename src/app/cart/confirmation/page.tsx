@@ -1,13 +1,10 @@
-import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import Footer from "@/components/common/footer";
 import { Header } from "@/components/common/header";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
-import { shippingAddressTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import CartSummary from "../components/cart-summary";
@@ -43,10 +40,6 @@ const confirmationPage = async () => {
     redirect("/");
   }
 
-  const shippingAddresses = await db.query.shippingAddressTable.findMany({
-    where: eq(shippingAddressTable.userId, session.user.id),
-  });
-
   const cartTotalInCents = cart.items.reduce(
     (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
     0,
@@ -56,10 +49,8 @@ const confirmationPage = async () => {
   }
 
   return (
-    // 👇 ALTERAÇÃO 1: Adicionamos as classes flex aqui
     <div className="flex min-h-screen flex-col">
       <Header />
-      {/* 👇 ALTERAÇÃO 2: Adicionamos a classe flex-grow aqui para empurrar o footer */}
       <div className="flex-grow mx-5 mt-25 mb-8 space-y-5">
         <Card>
           <CardHeader>

@@ -1,8 +1,10 @@
+// src/app/cart/identification/components/addresses.tsx
+
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react"; // Adicione useEffect
 import { useForm } from "react-hook-form";
 import { PatternFormat } from "react-number-format";
 import { toast } from "sonner";
@@ -54,9 +56,16 @@ const Addresses = ({
   defaultShippingAddressId,
 }: AddressesProps) => {
   const router = useRouter();
+
+  // 👇 A MUDANÇA PRINCIPAL ESTÁ AQUI 👇
+  // A lógica agora é:
+  // 1. Usar o endereço que já está no carrinho (defaultShippingAddressId).
+  // 2. Se não houver, usar o ID do primeiro endereço da lista (shippingAddresses[0]?.id).
+  // 3. Se não houver nenhum dos dois, o valor inicial é null.
   const [selectedAddress, setSelectedAddress] = useState<string | null>(
-    defaultShippingAddressId || null,
+    defaultShippingAddressId || (shippingAddresses[0]?.id ?? null),
   );
+
   const createShippingAddressMutation = useCreateShippingAddress();
   const updateCartShippingAddressMutation = useUpdateCartShippingAddress();
   const { data: addresses, isLoading } = useUserAddresses({
@@ -128,7 +137,7 @@ const Addresses = ({
           </div>
         ) : (
           <RadioGroup
-            value={selectedAddress}
+            value={selectedAddress ?? ""} // Usar string vazia como fallback para o RadioGroup
             onValueChange={setSelectedAddress}
           >
             {addresses?.length === 0 && (
@@ -141,14 +150,14 @@ const Addresses = ({
 
             {addresses?.map((address) => (
               <Card key={address.id}>
-                <CardContent>
-                  <div className="flex items-start space-x-2">
+                <CardContent className="p-4">
+                  <div className="flex items-start space-x-4">
                     <RadioGroupItem value={address.id} id={address.id} />
                     <div className="flex-1">
                       <Label htmlFor={address.id} className="cursor-pointer">
-                        <div>
-                          <p className="text-sm">{formatAddress(address)}</p>
-                        </div>
+                        <p className="text-muted-foreground text-sm">
+                          {formatAddress(address)}
+                        </p>
                       </Label>
                     </div>
                   </div>
@@ -157,10 +166,12 @@ const Addresses = ({
             ))}
 
             <Card>
-              <CardContent>
-                <div className="flex items-center space-x-2">
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-4">
                   <RadioGroupItem value="add_new" id="add_new" />
-                  <Label htmlFor="add_new">Adicionar novo endereço</Label>
+                  <Label htmlFor="add_new" className="cursor-pointer">
+                    Adicionar novo endereço
+                  </Label>
                 </div>
               </CardContent>
             </Card>

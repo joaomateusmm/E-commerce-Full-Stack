@@ -1,12 +1,13 @@
 "use client";
 
 import { MinusIcon, PlusIcon } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 
 import AddToCartButton from "./add-to-cart-btn";
+import BuyProductButton from "./buy-product-button";
 
 interface ProductActionsProps {
   productVariantId: string;
@@ -40,13 +41,14 @@ const ProductActions = ({ productVariantId }: ProductActionsProps) => {
         </div>
       </div>
       <div className="flex flex-col space-y-4 px-5">
+        <BuyProductButton
+          productVariantId={productVariantId}
+          quantity={quantity}
+        />
         <AddToCartButton
           productVariantId={productVariantId}
           quantity={quantity}
         />
-        <Button className="mt-2 rounded-full py-6" asChild>
-          <Link href="/cart/identification">Finalizar compra</Link>
-        </Button>
       </div>
     </>
   );
