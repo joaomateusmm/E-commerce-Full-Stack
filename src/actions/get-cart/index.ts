@@ -10,9 +10,16 @@ export const getCart = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
+
+  // Se o usuário não estiver logado, retorna um carrinho vazio
   if (!session?.user) {
-    throw new Error("Unauthorized");
+    return {
+      id: null,
+      items: [],
+      totalPriceInCents: 0,
+    };
   }
+
   const cart = await db.query.cartTable.findFirst({
     where: (cart, { eq }) => eq(cart.userId, session.user.id),
     with: {
@@ -27,6 +34,7 @@ export const getCart = async () => {
       },
     },
   });
+
   if (!cart) {
     const [newCart] = await db
       .insert(cartTable)
@@ -34,12 +42,14 @@ export const getCart = async () => {
         userId: session.user.id,
       })
       .returning();
+
     return {
       ...newCart,
       items: [],
       totalPriceInCents: 0,
     };
   }
+
   return {
     ...cart,
     totalPriceInCents: cart.items.reduce(

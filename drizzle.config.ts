@@ -14,7 +14,6 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    // Passa a URL da sua base de dados para o Drizzle Kit
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL!,
   },
 });
