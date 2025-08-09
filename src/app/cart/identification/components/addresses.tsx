@@ -84,16 +84,19 @@ const Addresses = ({
     try {
       const newAddress =
         await createShippingAddressMutation.mutateAsync(values);
-      toast.success("Endereço criado com sucesso!");
+      toast.success("Endereço criado com sucesso!", {
+        position: "top-center",
+      });
       form.reset();
       setSelectedAddress(newAddress.id);
 
       await updateCartShippingAddressMutation.mutateAsync({
         shippingAddressId: newAddress.id,
       });
-      toast.success("Endereço vinculado ao carrinho!");
     } catch (error) {
-      toast.error("Erro ao criar endereço. Tente novamente.");
+      toast.error("Erro ao criar endereço. Tente novamente.", {
+        position: "top-center",
+      });
       console.error(error);
     }
   };
@@ -116,7 +119,7 @@ const Addresses = ({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Identificação</CardTitle>
+        <CardTitle>Selecione seu Endereço</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -168,7 +171,7 @@ const Addresses = ({
           <div className="mt-4">
             <Button
               onClick={handleGoToPayment}
-              className="w-full"
+              className="w-full cursor-pointer rounded-2xl py-6 drop-shadow-md duration-300 hover:scale-[1.02] hover:active:scale-95"
               disabled={updateCartShippingAddressMutation.isPending}
             >
               {updateCartShippingAddressMutation.isPending
@@ -363,7 +366,7 @@ const Addresses = ({
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full cursor-pointer rounded-2xl py-6 drop-shadow-md duration-300 hover:scale-[1.02] hover:active:scale-95"
                 disabled={
                   createShippingAddressMutation.isPending ||
                   updateCartShippingAddressMutation.isPending

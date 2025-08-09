@@ -72,9 +72,9 @@ const CartItem = ({
           <p className="text-muted-foreground text-xs font-medium">
             {productVariantName}
           </p>
-          <div className="flex w-[100px] items-center justify-between rounded-lg border bg-gray-50/50 p-1 drop-shadow-md">
+          <div className="flex w-[100px] items-center justify-between rounded-lg border bg-transparent p-1 text-gray-800 drop-shadow-sm duration-200">
             <Button
-              className="h-4 w-4"
+              className="h-6 w-4 cursor-pointer border-[1.5px] bg-transparent text-gray-800 drop-shadow-sm duration-200 hover:scale-[1.05] hover:bg-gray-50/10 hover:text-black"
               variant="ghost"
               onClick={handleDecreaseQuantityClick}
             >
@@ -82,7 +82,7 @@ const CartItem = ({
             </Button>
             <p>{quantity}</p>
             <Button
-              className="h-4 w-4"
+              className="h-6 w-4 cursor-pointer border-[1.5px] bg-transparent text-gray-800 drop-shadow-sm duration-200 hover:scale-[1.05] hover:bg-gray-50/10 hover:text-black"
               variant="ghost"
               onClick={handleIncreaseQuantityClick}
             >
@@ -94,7 +94,7 @@ const CartItem = ({
       <div>
         <div className="flex flex-col items-end justify-center space-y-3">
           <Button
-            className="cursor-pointer drop-shadow-md hover:scale-[1.05px] hover:bg-red-500"
+            className="cursor-pointer border-[1.5px] bg-transparent text-gray-800 drop-shadow-md duration-200 hover:bg-red-500 hover:text-black"
             variant="outline"
             size="icon"
             onClick={handleDeleteClick}

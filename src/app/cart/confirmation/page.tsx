@@ -1,20 +1,20 @@
-// src/app/cart/identification/page.tsx
-
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import Footer from "@/components/common/footer";
 import { Header } from "@/components/common/header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { db } from "@/db";
 import { shippingAddressTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 import CartSummary from "../components/cart-summary";
-import Addresses from "./components/addresses";
+import { formatAddress } from "../helpers/address";
+import FinishOrderButton from "./components/finish-order-button";
 
-const IdentificationPage = async () => {
-
+const confirmationPage = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -23,8 +23,6 @@ const IdentificationPage = async () => {
     redirect("/");
   }
 
-  // O erro acontece na linha abaixo porque a query gerada pelo Drizzle
-  // não é compatível com o banco de dados antigo ao qual o Next.js está se conectando.
   const cart = await db.query.cartTable.findFirst({
     where: (cart, { eq }) => eq(cart.userId, session.user.id),
     with: {
@@ -53,39 +51,49 @@ const IdentificationPage = async () => {
     (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
     0,
   );
+  if (!cart.shippingAddress) {
+    redirect("/cart/identification");
+  }
 
   return (
-    <div>
+    // 👇 ALTERAÇÃO 1: Adicionamos as classes flex aqui
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <div className="mt-25 space-y-4 px-5">
-        <Addresses
-          shippingAddresses={shippingAddresses}
-          defaultShippingAddressId={cart.shippingAddressId}
-        />
-
+      {/* 👇 ALTERAÇÃO 2: Adicionamos a classe flex-grow aqui para empurrar o footer */}
+      <div className="flex-grow mx-5 mt-25 mb-8 space-y-5">
+        <Card>
+          <CardHeader>
+            <CardTitle>Identificação</CardTitle>
+          </CardHeader>
+          <Card className="mx-5">
+            <CardContent>
+              <p className="text-muted-foreground text-sm">
+                {formatAddress(cart.shippingAddress)}
+              </p>
+            </CardContent>
+          </Card>
+          <div className="mx-5 my-2">
+            <FinishOrderButton />
+          </div>
+        </Card>
         <CartSummary
           subtotalInCents={cartTotalInCents}
           totalInCents={cartTotalInCents}
           products={cart.items.map((item) => ({
             id: item.productVariant.id,
-
             name: item.productVariant.product.name,
-
             variantName: item.productVariant.name,
-
             quantity: item.quantity,
-
             priceInCents: item.productVariant.priceInCents,
-
             imageUrl: item.productVariant.imageUrl,
           }))}
         />
       </div>
-      <div className="mt-24">
+      <div>
         <Footer />
       </div>
     </div>
   );
 };
 
-export default IdentificationPage;
+export default confirmationPage;

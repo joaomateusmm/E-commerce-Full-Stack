@@ -1,6 +1,7 @@
 "use client";
 
 import { MinusIcon, PlusIcon } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -43,8 +44,8 @@ const ProductActions = ({ productVariantId }: ProductActionsProps) => {
           productVariantId={productVariantId}
           quantity={quantity}
         />
-        <Button className="rounded-full py-6" size="lg">
-          Comprar agora
+        <Button className="mt-2 rounded-full py-6" asChild>
+          <Link href="/cart/identification">Finalizar compra</Link>
         </Button>
       </div>
     </>
