@@ -11,15 +11,13 @@ import CartSummary from "../components/cart-summary";
 import { formatAddress } from "../helpers/address";
 import FinishOrderButton from "./components/finish-order-button";
 
-const confirmationPage = async () => {
+const ConfirmationPage = async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
-
   if (!session?.user.id) {
     redirect("/");
   }
-
   const cart = await db.query.cartTable.findFirst({
     where: (cart, { eq }) => eq(cart.userId, session.user.id),
     with: {
@@ -35,11 +33,9 @@ const confirmationPage = async () => {
       },
     },
   });
-
   if (!cart || cart?.items.length === 0) {
     redirect("/");
   }
-
   const cartTotalInCents = cart.items.reduce(
     (acc, item) => acc + item.productVariant.priceInCents * item.quantity,
     0,
@@ -47,25 +43,22 @@ const confirmationPage = async () => {
   if (!cart.shippingAddress) {
     redirect("/cart/identification");
   }
-
   return (
-    <div className="flex min-h-screen flex-col">
+    <div>
       <Header />
-      <div className="flex-grow mx-5 mt-25 mb-8 space-y-5">
+      <div className="space-y-4 px-5 mt-25">
         <Card>
           <CardHeader>
             <CardTitle>Identificação</CardTitle>
           </CardHeader>
-          <Card className="mx-5">
-            <CardContent>
-              <p className="text-muted-foreground text-sm">
-                {formatAddress(cart.shippingAddress)}
-              </p>
-            </CardContent>
-          </Card>
-          <div className="mx-5 my-2">
+          <CardContent className="space-y-6">
+            <Card>
+              <CardContent>
+                <p className="text-sm">{formatAddress(cart.shippingAddress)}</p>
+              </CardContent>
+            </Card>
             <FinishOrderButton />
-          </div>
+          </CardContent>
         </Card>
         <CartSummary
           subtotalInCents={cartTotalInCents}
@@ -80,11 +73,11 @@ const confirmationPage = async () => {
           }))}
         />
       </div>
-      <div>
+      <div className="mt-12">
         <Footer />
       </div>
     </div>
   );
 };
 
-export default confirmationPage;
+export default ConfirmationPage;

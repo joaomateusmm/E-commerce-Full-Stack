@@ -1,6 +1,14 @@
 "use client";
 
-import { LogInIcon, LogOutIcon, MenuIcon } from "lucide-react";
+import { Separator } from "@radix-ui/react-separator";
+import {
+  House,
+  LogInIcon,
+  LogOutIcon,
+  MenuIcon,
+  ShoppingCart,
+  Truck,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -15,9 +23,11 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { db } from "@/db";
 import { authClient } from "@/lib/auth-client";
 
 import { Cart } from "./cart";
+import CategorySelector from "./category-selector";
 
 export const Header = () => {
   const { data: session } = authClient.useSession();
@@ -25,6 +35,8 @@ export const Header = () => {
 
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+
+  const isAuthenticated = !!session?.user;
 
   useEffect(() => {
     const controlNavbar = () => {
@@ -58,12 +70,10 @@ export const Header = () => {
         <Image src="/logo.svg" alt="BEWEAR" width={100} height={26.14} />
       </Link>
 
-      {/* 👇 PASSO 1: Inverter a posição dos botões */}
       <div className="flex items-center gap-4">
-        {/* O carrinho agora vem primeiro */}
+        {/* O carrinho na barra principal permanece, abrindo a folha lateral */}
         <Cart />
 
-        {/* O menu (Sheet) agora vem depois */}
         <Sheet>
           <SheetTrigger asChild>
             <Button
@@ -74,17 +84,17 @@ export const Header = () => {
               <MenuIcon />
             </Button>
           </SheetTrigger>
-          <SheetContent>
-            <SheetHeader>
-              <SheetTitle>Menu</SheetTitle>
+          <SheetContent className="rounded-l-3xl">
+            <SheetHeader className="mx-5 flex justify-center">
+              <SheetTitle className="mt-5">Menu</SheetTitle>
             </SheetHeader>
             <div className="px-5">
-              {session?.user ? (
+              {isAuthenticated ? (
+                // SE O USUÁRIO ESTIVER LOGADO
                 <>
-                  <div className="mt-6 flex flex-row items-center justify-between gap-4">
-                    {/* 👇 PASSO 2: Adicionar 'min-w-0' para permitir que este container encolha */}
+                  <div className="mt-2 flex flex-row items-center justify-between gap-4">
                     <div className="flex min-w-0 items-center gap-3">
-                      <Avatar>
+                      <Avatar className="h-12 w-12 drop-shadow-md">
                         <AvatarImage
                           src={session?.user?.image as string | undefined}
                         />
@@ -95,23 +105,15 @@ export const Header = () => {
                       </Avatar>
                       <div className="min-w-0">
                         <h3 className="font-semibold">{session.user.name}</h3>
-                        {/* 👇 PASSO 3: Adicionar 'truncate' para cortar o texto com "..." */}
                         <span className="text-muted-foreground block truncate text-xs">
                           {session.user.email}
                         </span>
                       </div>
                     </div>
-                    <Button
-                      className="cursor-pointer"
-                      variant="outline"
-                      size="icon"
-                      onClick={handleSignOut}
-                    >
-                      <LogOutIcon />
-                    </Button>
                   </div>
                 </>
               ) : (
+                // SE O USUÁRIO NÃO ESTIVER LOGADO
                 <div className="mt-6 flex items-center justify-between">
                   <h2 className="font-semibold">Olá. Faça seu login!</h2>
                   <Button size="icon" asChild variant="outline">
@@ -122,6 +124,65 @@ export const Header = () => {
                 </div>
               )}
             </div>
+
+            <div className="mx-auto mt-4 w-[75%] border-b border-gray-100"></div>
+
+            <div className="ml-3 flex flex-col gap-2 px-5">
+              <Button
+                variant="ghost"
+                className="justify-start gap-3 py-5"
+                asChild
+              >
+                <Link href="/">
+                  <House size={16} />
+                  Início
+                </Link>
+              </Button>
+
+              {isAuthenticated && (
+                <Button
+                  variant="ghost"
+                  className="justify-start gap-3 py-5"
+                  asChild
+                >
+                  <Link href="/my-orders">
+                    <Truck size={16} />
+                    Meus Pedidos
+                  </Link>
+                </Button>
+              )}
+
+              <Button
+                variant="ghost"
+                className="justify-start gap-3 py-5"
+                asChild
+              >
+                <Link href="/cart/identification">
+                  <ShoppingCart size={16} />
+                  Carrinho
+                </Link>
+              </Button>
+            </div>
+
+            <div className="mx-auto mt-2 w-[75%] border-b border-gray-100"></div>
+
+            {/* <div className="p-5">
+              <CategorySelector categories={categories} />
+            </div> */}
+
+            {/* LÓGICA DE LOGOUT CORRIGIDA E POSICIONADA NO FINAL */}
+            {isAuthenticated && (
+              <div className="text-muted-foreground absolute bottom-5 w-full cursor-pointer px-5">
+                <Button
+                  variant="ghost"
+                  className="w-full justify-start gap-3"
+                  onClick={handleSignOut}
+                >
+                  <LogOutIcon size={16} />
+                  Sair da conta
+                </Button>
+              </div>
+            )}
           </SheetContent>
         </Sheet>
       </div>

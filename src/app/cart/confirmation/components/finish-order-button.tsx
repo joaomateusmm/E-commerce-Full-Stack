@@ -30,7 +30,7 @@ const FinishOrderButton = () => {
   return (
     <>
       <Button
-        className="w-full rounded-full"
+        className="w-full rounded-full py-6 hover:scale-[1.02] cursor-pointer"
         size="lg"
         onClick={handleFinishOrder}
         disabled={finishOrderMutation.isPending}
