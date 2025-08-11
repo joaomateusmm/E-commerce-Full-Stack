@@ -1,7 +1,6 @@
 "use client";
 
 import { MinusIcon, PlusIcon } from "lucide-react";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";

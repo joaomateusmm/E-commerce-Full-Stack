@@ -1,6 +1,5 @@
 "use client";
 
-import { Separator } from "@radix-ui/react-separator";
 import {
   House,
   LogInIcon,
@@ -23,11 +22,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { db } from "@/db";
 import { authClient } from "@/lib/auth-client";
 
 import { Cart } from "./cart";
-import CategorySelector from "./category-selector";
 
 export const Header = () => {
   const { data: session } = authClient.useSession();

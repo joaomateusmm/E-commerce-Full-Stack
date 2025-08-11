@@ -1,59 +1,119 @@
-// src/app/category/[slug]/page.tsx
-
 import { eq } from "drizzle-orm";
+import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import ProductItem from "@/app/authentication/components/common/product-item";
-import Footer from "@/components/common/footer";
-import { Header } from "@/components/common/header";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { db } from "@/db";
-import { categoryTable, productTable } from "@/db/schema";
+import { categoryTable } from "@/db/schema";
+import { formatCentsToBRL } from "@/helpers/money";
 
-// A interface separada foi removida.
-// A tipagem agora é feita diretamente na função.
-const CategoryPage = async ({ params }: { params: { slug: string } }) => {
-  const { slug } = params;
+interface CategoryPageProps {
+  params: {
+    slug: string;
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function generateMetadata({ params }: { params: any }) {
+  const typedParams = params as CategoryPageProps["params"];
 
   const category = await db.query.categoryTable.findFirst({
-    where: eq(categoryTable.slug, slug),
-  });
-
-  if (!category) {
-    return notFound();
-  }
-
-  const products = await db.query.productTable.findMany({
-    where: eq(productTable.categoryId, category.id),
-    with: {
-      variants: true,
+    where: eq(categoryTable.slug, typedParams.slug),
+    columns: {
+      name: true,
     },
   });
 
+  if (!category) {
+    return {
+      title: "Categoria não encontrada",
+    };
+  }
+
+  return {
+    title: `Categoria: ${category.name}`,
+    description: `Produtos da categoria ${category.name}.`,
+  };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function CategoryPage({ params }: { params: any }) {
+  const { slug } = params as { slug: string };
+
+  const category = await db.query.categoryTable.findFirst({
+    where: eq(categoryTable.slug, slug),
+    with: {
+      products: {
+        with: {
+          variants: true,
+        },
+      },
+    },
+  });
+
+  if (!category) {
+    notFound();
+  }
+
   return (
-    <div className="flex min-h-screen flex-col">
-      <div className="flex-grow">
-        <div className="flex flex-col gap-8 p-5">
-          <Header />
+    <main className="container space-y-8 py-12">
+      <Badge variant="outline" className="rounded-md px-3 py-1 text-sm">
+        Categoria
+      </Badge>
 
-          <div className="mx-auto mt-20">
-            <h2 className="mb-5 text-lg font-bold uppercase">
-              {category.name}
-            </h2>
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">{category.name}</h1>
+        <p className="text-muted-foreground text-lg">
+          Confira todos os produtos disponíveis na categoria {category.name}.
+        </p>
+      </div>
 
-            <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 md:grid-cols-4">
-              {products.map((product) => (
-                <ProductItem key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
+      {category.products.length > 0 ? (
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {category.products.map((product) =>
+            product.variants.map((variant) => (
+              <Link key={variant.id} href={`/product-variant/${variant.slug}`}>
+                <Card className="overflow-hidden transition-transform duration-300 ease-in-out hover:scale-105">
+                  <CardHeader className="p-0">
+                    <Image
+                      src={variant.imageUrl}
+                      alt={`${product.name} - ${variant.name}`}
+                      width={400}
+                      height={400}
+                      className="aspect-square w-full object-cover"
+                    />
+                  </CardHeader>
+                  <CardContent className="p-4">
+                    <CardTitle className="truncate text-lg">
+                      {product.name}
+                    </CardTitle>
+                    <CardDescription className="truncate">
+                      {variant.name}
+                    </CardDescription>
+                    <p className="mt-2 text-xl font-semibold">
+                      {formatCentsToBRL(variant.priceInCents)}
+                    </p>
+                  </CardContent>
+                </Card>
+              </Link>
+            )),
+          )}
         </div>
-      </div>
-
-      <div className="">
-        <Footer />
-      </div>
-    </div>
+      ) : (
+        <div className="flex h-60 items-center justify-center rounded-md border border-dashed">
+          <p className="text-muted-foreground">
+            Nenhum produto encontrado nesta categoria.
+          </p>
+        </div>
+      )}
+    </main>
   );
-};
-
-export default CategoryPage;
+}
