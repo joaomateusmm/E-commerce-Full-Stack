@@ -87,9 +87,14 @@ const SignInForm = ({ onSwitchToSignUp }: SignInFormProps) => {
   }
 
   const handleSignInWithGoogle = async () => {
-    await authClient.signIn.social({
-      provider: "google",
-    });
+    try {
+      await authClient.signIn.social({
+        provider: "google",
+      });
+    } catch (error) {
+      console.error("Google Sign-In Error:", error);
+      toast.error("Ocorreu um erro ao tentar fazer login com o Google.");
+    }
   };
 
   return (

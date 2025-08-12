@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,16 +34,7 @@ const Authentication = () => {
             <SignUpForm onSwitchToSignIn={switchToSignIn} />
           </TabsContent>
         </Tabs>
-        <div className="my-5 mt-24 px-5">
-          <Image
-            src="/logo.svg"
-            alt="Leve uma vida com estilo"
-            height={0}
-            width={0}
-            sizes="100vw"
-            className="h-auto w-full"
-          />
-        </div>
+        <div className="my-5 mt-24 px-5"></div>
       </div>
     </>
   );
