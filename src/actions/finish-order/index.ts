@@ -4,11 +4,7 @@ import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
 import { db } from "@/db";
-import {
-  cartTable,
-  orderItemTable,
-  orderTable,
-} from "@/db/schema";
+import { cartTable, orderItemTable, orderTable } from "@/db/schema";
 import { auth } from "@/lib/auth";
 
 export const finishOrder = async () => {

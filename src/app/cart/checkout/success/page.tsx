@@ -31,24 +31,25 @@ const CheckoutSuccessPage = () => {
             Seu pedido foi efetuado com sucesso. Você pode acompanhar o status
             na seção de “Meus Pedidos”.
           </DialogDescription>
-
-          <DialogFooter>
-            <Button
-              className="cursor-pointer rounded-full py-6 hover:scale-[1.02]"
-              size="lg"
-              asChild
-            >
-              <Link href="/my-orders">Ver meus pedidos</Link>
-            </Button>
-            <Button
-              className="mb-2 rounded-full py-6"
-              variant="outline"
-              size="lg"
-              asChild
-            >
-              <Link href="/">Voltar para a loja</Link>
-            </Button>
-          </DialogFooter>
+          <div className="mx-auto">
+            <DialogFooter>
+              <Button
+                className="cursor-pointer rounded-full py-6 hover:scale-[1.02]"
+                size="lg"
+                asChild
+              >
+                <Link href="/my-orders">Ver meus pedidos</Link>
+              </Button>
+              <Button
+                className="mb-2 rounded-full py-6"
+                variant="outline"
+                size="lg"
+                asChild
+              >
+                <Link href="/">Voltar para a loja</Link>
+              </Button>
+            </DialogFooter>
+          </div>
         </DialogContent>
       </Dialog>
     </>
